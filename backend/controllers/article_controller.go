@@ -18,7 +18,11 @@ func CreateArticle(ctx *gin.Context) {
 		return
 	}
 
-	if err := global.Db.AutoMigrate(&article); err != nil {
+	if err := global.Db.AutoMigrate(
+		&models.Article{},
+		&models.FitnessAction{},
+		&models.FitnessActionGroup{},
+	); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -47,7 +51,7 @@ func GetArticleByID(ctx *gin.Context) {
 
 	var article models.Article
 
-	err := global.Db.Where("id = ?", id).First(&article).Error
+	err := global.Db.Preload("FitnessActions.ActionGroups").Where("id = ?", id).First(&article).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -56,4 +60,5 @@ func GetArticleByID(ctx *gin.Context) {
 		}
 		return
 	}
+	ctx.JSON(http.StatusOK, article)
 }
