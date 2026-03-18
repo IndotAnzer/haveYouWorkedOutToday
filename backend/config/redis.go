@@ -1,7 +1,7 @@
 package config
 
 import (
-	"haveYouWorkedToday/global"
+	"haveYouWorkedOutToday/global"
 	"log"
 
 	"github.com/go-redis/redis"
@@ -16,8 +16,11 @@ func InitRedis() {
 
 	_, err := RedisClient.Ping().Result()
 	if err != nil {
-		log.Fatalf("Failed to connect to Redis, got error: %s", err.Error())
+		log.Printf("Warning: Failed to connect to Redis, got error: %s", err.Error())
+		log.Printf("Continuing without Redis...")
+		return
 	}
 
 	global.RedisDB = RedisClient
+	log.Printf("Redis connected successfully")
 }

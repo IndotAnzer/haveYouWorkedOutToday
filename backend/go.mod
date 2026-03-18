@@ -1,8 +1,9 @@
-module haveYouWorkedToday
+module haveYouWorkedOutToday
 
 go 1.26.1
 
 require (
+	github.com/gin-contrib/cors v1.7.6
 	github.com/gin-gonic/gin v1.12.0
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang-jwt/jwt/v5 v5.3.1

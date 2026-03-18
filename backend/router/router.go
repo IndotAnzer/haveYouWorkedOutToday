@@ -1,14 +1,25 @@
 package router
 
 import (
-	"haveYouWorkedToday/controllers"
-	"haveYouWorkedToday/middlewares"
+	"haveYouWorkedOutToday/controllers"
+	"haveYouWorkedOutToday/middlewares"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
+
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"}, // 开发环境允许所有来源，生产环境请指定具体域名
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	auth := r.Group("/api/auth")
 	{
@@ -23,7 +34,9 @@ func SetupRouter() *gin.Engine {
 
 		api.POST("/articles", controllers.CreateArticle)
 		api.GET("/articles", controllers.GetAllArticles)
-		api.GET("articles/:id", controllers.GetArticleByID)
+		api.GET("/my/articles", controllers.GetArticleByUser)
+		api.GET("/articles/:id", controllers.GetArticleByID)
+		api.DELETE("/articles/:id", controllers.DeleteArticle)
 
 		api.POST("/articles/:id/like", controllers.LikeArticle)
 		api.GET("/articles/:id/like", controllers.GetArticleLikes)

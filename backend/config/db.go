@@ -1,7 +1,7 @@
 package config
 
 import (
-	"haveYouWorkedToday/global"
+	"haveYouWorkedOutToday/global"
 	"log"
 	"time"
 

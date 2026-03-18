@@ -1,8 +1,8 @@
 package main
 
 import (
-	"haveYouWorkedToday/config"
-	"haveYouWorkedToday/router"
+	"haveYouWorkedOutToday/config"
+	"haveYouWorkedOutToday/router"
 )
 
 func main() {

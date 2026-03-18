@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"haveYouWorkedToday/global"
-	"haveYouWorkedToday/models"
-	"haveYouWorkedToday/utils"
+	"haveYouWorkedOutToday/global"
+	"haveYouWorkedOutToday/models"
+	"haveYouWorkedOutToday/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"haveYouWorkedToday/utils"
+	"haveYouWorkedOutToday/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
