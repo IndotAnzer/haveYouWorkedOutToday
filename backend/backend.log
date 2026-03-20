@@ -1,0 +1,23 @@
+2026/03/19 23:11:49 Redis connected successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/auth/login           --> haveYouWorkedOutToday/controllers.Login (4 handlers)
+[GIN-debug] POST   /api/auth/register        --> haveYouWorkedOutToday/controllers.Register (4 handlers)
+[GIN-debug] POST   /api/articles             --> haveYouWorkedOutToday/controllers.CreateArticle (5 handlers)
+[GIN-debug] GET    /api/articles             --> haveYouWorkedOutToday/controllers.GetAllArticles (5 handlers)
+[GIN-debug] GET    /api/my/articles          --> haveYouWorkedOutToday/controllers.GetArticleByUser (5 handlers)
+[GIN-debug] GET    /api/articles/:id         --> haveYouWorkedOutToday/controllers.GetArticleByID (5 handlers)
+[GIN-debug] DELETE /api/articles/:id         --> haveYouWorkedOutToday/controllers.DeleteArticle (5 handlers)
+[GIN-debug] POST   /api/articles/:id/like    --> haveYouWorkedOutToday/controllers.LikeArticle (5 handlers)
+[GIN-debug] GET    /api/articles/:id/like    --> haveYouWorkedOutToday/controllers.GetArticleLikes (5 handlers)
+[GIN-debug] POST   /api/articles/:id/comments --> haveYouWorkedOutToday/controllers.CreateComment (5 handlers)
+[GIN-debug] GET    /api/articles/:id/comments --> haveYouWorkedOutToday/controllers.GetCommentsAndReplies (5 handlers)
+[GIN-debug] POST   /api/articles/:id/comments/:commentId/replies --> haveYouWorkedOutToday/controllers.CreateReply (5 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://github.com/gin-gonic/gin/blob/master/docs/doc.md#dont-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :3000
+[GIN-debug] [ERROR] listen tcp :3000: bind: address already in use

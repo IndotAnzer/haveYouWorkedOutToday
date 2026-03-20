@@ -37,6 +37,8 @@ func Register(ctx *gin.Context) {
 	}
 
 	if err := global.Db.Create(&user).Error; err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Username already exists"})
+		return
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{"token": token})
@@ -50,6 +52,12 @@ func Login(ctx *gin.Context) {
 
 	if err := ctx.ShouldBind(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// 检查必要字段
+	if input.Username == "" || input.Password == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Username and password are required"})
 		return
 	}
 
@@ -71,5 +79,11 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"token": token})
+	ctx.JSON(http.StatusOK, gin.H{
+		"token": token,
+		"user": gin.H{
+			"id":       user.ID,
+			"username": user.Username,
+		},
+	})
 }

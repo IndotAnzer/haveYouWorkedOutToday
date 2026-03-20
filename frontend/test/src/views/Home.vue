@@ -65,7 +65,7 @@ const fetchArticles = async () => {
       return
     }
 
-    const response = await axios.get('http://localhost:3000/api/articles', {
+    const response = await axios.get('http://localhost:3001/api/articles', {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -85,11 +85,16 @@ const createArticle = async () => {
     return
   }
 
+  const token = localStorage.getItem('token')
+  if (!token) {
+    router.push('/login')
+    return
+  }
+
   loading.value = true
   error.value = ''
 
   try {
-    const token = localStorage.getItem('token')
     const content = newArticle.content || '暂无训练心得'
     const preview = newArticle.preview || content.substring(0, 50)
     
@@ -106,7 +111,7 @@ const createArticle = async () => {
         }))
       }))
     
-    await axios.post('http://localhost:3000/api/articles', {
+    await axios.post('http://localhost:3001/api/articles', {
       title: newArticle.title,
       content: content,
       preview: preview,

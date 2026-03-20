@@ -32,7 +32,7 @@ const register = async () => {
   error.value = ''
 
   try {
-    await axios.post('http://localhost:3000/api/auth/register', {
+    await axios.post('http://localhost:3001/api/auth/register', {
       username: username.value,
       password: password.value
     })

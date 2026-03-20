@@ -40,6 +40,12 @@ func SetupRouter() *gin.Engine {
 
 		api.POST("/articles/:id/like", controllers.LikeArticle)
 		api.GET("/articles/:id/like", controllers.GetArticleLikes)
+
+		api.POST("/articles/:id/comments", controllers.CreateComment)
+		api.GET("/articles/:id/comments", controllers.GetCommentsAndReplies)
+		api.POST("/articles/:id/comments/:commentId/replies", controllers.CreateReply)
+		api.DELETE("/articles/:id/comments/:commentId", controllers.DeleteComment)
+		api.DELETE("/articles/:id/comments/:commentId/replies/:replyId", controllers.DeleteReply)
 	}
 	return r
 }

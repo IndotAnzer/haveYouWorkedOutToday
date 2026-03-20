@@ -22,13 +22,15 @@ const login = async () => {
   error.value = ''
 
   try {
-    const response = await axios.post('http://localhost:3000/api/auth/login', {
+    const response = await axios.post('http://localhost:3001/api/auth/login', {
       username: username.value,
       password: password.value
     })
 
     const token = response.data.token.replace('Bearer ', '')
+    const user = response.data.user
     userStore.setToken(token)
+    userStore.setUserInfo(user.id, user.username)
     router.push('/')
   } catch (err) {
     error.value = err.response?.data?.message || '登录失败，请检查用户名和密码'

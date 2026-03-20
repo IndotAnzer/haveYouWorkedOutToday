@@ -30,6 +30,12 @@ func CreateArticle(ctx *gin.Context) {
 		return
 	}
 
+	// 检查必要字段
+	if article.Title == "" || article.Content == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Title and content are required"})
+		return
+	}
+
 	article.UserID = user.ID
 
 	if err := global.Db.AutoMigrate(
@@ -59,11 +65,13 @@ func GetAllArticles(ctx *gin.Context) {
 
 	for i := range articles {
 		likeKey := fmt.Sprintf("article:%d:likes", articles[i].ID)
-		likes, err := global.RedisDB.Get(likeKey).Result()
-		if err == nil {
-			var likesInt int
-			if _, err := fmt.Sscanf(likes, "%d", &likesInt); err == nil {
-				articles[i].Likes = likesInt
+		if global.RedisDB != nil {
+			likes, err := global.RedisDB.Get(likeKey).Result()
+			if err == nil {
+				var likesInt int
+				if _, err := fmt.Sscanf(likes, "%d", &likesInt); err == nil {
+					articles[i].Likes = likesInt
+				}
 			}
 		}
 	}
@@ -87,11 +95,13 @@ func GetArticleByID(ctx *gin.Context) {
 	}
 
 	likeKey := fmt.Sprintf("article:%d:likes", article.ID)
-	likes, err := global.RedisDB.Get(likeKey).Result()
-	if err == nil {
-		var likesInt int
-		if _, err := fmt.Sscanf(likes, "%d", &likesInt); err == nil {
-			article.Likes = likesInt
+	if global.RedisDB != nil {
+		likes, err := global.RedisDB.Get(likeKey).Result()
+		if err == nil {
+			var likesInt int
+			if _, err := fmt.Sscanf(likes, "%d", &likesInt); err == nil {
+				article.Likes = likesInt
+			}
 		}
 	}
 
@@ -121,11 +131,13 @@ func GetArticleByUser(ctx *gin.Context) {
 
 	for i := range articles {
 		likeKey := fmt.Sprintf("article:%d:likes", articles[i].ID)
-		likes, err := global.RedisDB.Get(likeKey).Result()
-		if err == nil {
-			var likesInt int
-			if _, err := fmt.Sscanf(likes, "%d", &likesInt); err == nil {
-				articles[i].Likes = likesInt
+		if global.RedisDB != nil {
+			likes, err := global.RedisDB.Get(likeKey).Result()
+			if err == nil {
+				var likesInt int
+				if _, err := fmt.Sscanf(likes, "%d", &likesInt); err == nil {
+					articles[i].Likes = likesInt
+				}
 			}
 		}
 	}
@@ -136,12 +148,14 @@ func GetArticleByUser(ctx *gin.Context) {
 func DeleteArticle(ctx *gin.Context) {
 	id := ctx.Param("id")
 
-	if err := global.Db.Where("id = ?", id).Preload("FitnessActions.ActionGroups").Unscoped().Delete(&models.Article{}).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-		} else {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		}
+	var article models.Article
+	result := global.Db.Where("id = ?", id).Preload("FitnessActions.ActionGroups").Unscoped().Delete(&article)
+	if result.Error != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		return
+	}
+	if result.RowsAffected == 0 {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Article not found"})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"message": "Article deleted"})
