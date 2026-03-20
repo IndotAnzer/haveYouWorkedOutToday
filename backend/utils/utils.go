@@ -3,8 +3,11 @@ package utils
 import (
 	"errors"
 	"fmt"
+	"haveYouWorkedOutToday/global"
+	"haveYouWorkedOutToday/models"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -53,4 +56,18 @@ func ParseJWT(tokenString string) (string, error) {
 		return username, nil
 	}
 	return "", err
+}
+
+func GetUserID(c *gin.Context) (uint, error) {
+	username, exists := c.Get("username")
+	if !exists {
+		return 0, errors.New("username not found in context")
+	}
+
+	var user models.User
+	if err := global.Db.Where("username = ?", username).First(&user).Error; err != nil {
+		return 0, err
+	}
+
+	return user.ID, nil
 }

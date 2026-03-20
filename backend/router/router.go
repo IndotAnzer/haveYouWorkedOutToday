@@ -46,6 +46,9 @@ func SetupRouter() *gin.Engine {
 		api.POST("/articles/:id/comments/:commentId/replies", controllers.CreateReply)
 		api.DELETE("/articles/:id/comments/:commentId", controllers.DeleteComment)
 		api.DELETE("/articles/:id/comments/:commentId/replies/:replyId", controllers.DeleteReply)
+
+		api.GET("/articles/stats/frequency", controllers.GetTrainingFrequency)
+		api.GET("/articles/stats/volume", controllers.GetTrainingVolume)
 	}
 	return r
 }

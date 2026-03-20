@@ -22,7 +22,7 @@ const fetchMyArticles = async () => {
       return
     }
 
-    const response = await axios.get('http://localhost:3001/api/my/articles', {
+    const response = await axios.get('http://localhost:3000/api/my/articles', {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -60,7 +60,7 @@ const deleteArticle = async () => {
     const id = articleToDelete.value.ID || articleToDelete.value.id
     deletingId.value = id
     
-    await axios.delete(`http://localhost:3001/api/articles/${id}`, {
+    await axios.delete(`http://localhost:3000/api/articles/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"haveYouWorkedOutToday/global"
 	"haveYouWorkedOutToday/models"
+	"haveYouWorkedOutToday/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -12,18 +13,6 @@ import (
 )
 
 func CreateArticle(ctx *gin.Context) {
-	username, exists := ctx.Get("username")
-	if !exists {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
-		return
-	}
-
-	var user models.User
-	if err := global.Db.Where("username = ?", username).First(&user).Error; err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "User not found"})
-		return
-	}
-
 	var article models.Article
 	if err := ctx.ShouldBind(&article); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -36,7 +25,12 @@ func CreateArticle(ctx *gin.Context) {
 		return
 	}
 
-	article.UserID = user.ID
+	userID, err := utils.GetUserID(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	article.UserID = userID
 
 	if err := global.Db.AutoMigrate(
 		&models.Article{},
@@ -109,22 +103,15 @@ func GetArticleByID(ctx *gin.Context) {
 }
 
 func GetArticleByUser(ctx *gin.Context) {
-	username, exists := ctx.Get("username")
-	if !exists {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
-		return
-	}
-
-	var user models.User
-
-	if err := global.Db.Where("username = ?", username).First(&user).Error; err != nil {
+	userID, err := utils.GetUserID(ctx)
+	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	var articles []models.Article
 
-	if err := global.Db.Where("user_id = ?", user.ID).Find(&articles).Error; err != nil {
+	if err := global.Db.Where("user_id = ?", userID).Find(&articles).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

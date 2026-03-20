@@ -23,6 +23,10 @@ const logout = () => {
           <span class="nav-icon">🏠</span>
           <span>首页</span>
         </router-link>
+        <router-link v-if="userStore.isLoggedIn" to="/stats" class="nav-link">
+          <span class="nav-icon">📊</span>
+          <span>统计</span>
+        </router-link>
         <router-link v-if="userStore.isLoggedIn" to="/my-articles" class="nav-link">
           <span class="nav-icon">📝</span>
           <span>我的记录</span>

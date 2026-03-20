@@ -33,7 +33,7 @@ const fetchArticle = async () => {
       return
     }
 
-    const response = await axios.get(`http://localhost:3001/api/articles/${id}`, {
+    const response = await axios.get(`http://localhost:3000/api/articles/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -52,7 +52,7 @@ const fetchLikes = async () => {
   const id = route.params.id
   try {
     const token = localStorage.getItem('token')
-    const response = await axios.get(`http://localhost:3001/api/articles/${id}/like`, {
+    const response = await axios.get(`http://localhost:3000/api/articles/${id}/like`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -73,7 +73,7 @@ const likeArticle = async () => {
       router.push('/login')
       return
     }
-    const response = await axios.post(`http://localhost:3001/api/articles/${id}/like`, {}, {
+    const response = await axios.post(`http://localhost:3000/api/articles/${id}/like`, {}, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -110,7 +110,7 @@ const fetchComments = async () => {
   const id = route.params.id
   try {
     const token = localStorage.getItem('token')
-    const response = await axios.get(`http://localhost:3001/api/articles/${id}/comments`, {
+    const response = await axios.get(`http://localhost:3000/api/articles/${id}/comments`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -141,7 +141,7 @@ const submitComment = async () => {
   commentError.value = ''
 
   try {
-    const response = await axios.post(`http://localhost:3001/api/articles/${id}/comments`, {
+    const response = await axios.post(`http://localhost:3000/api/articles/${id}/comments`, {
       content: commentContent.value
     }, {
       headers: {
@@ -198,7 +198,7 @@ const submitReply = async () => {
   replyError.value = ''
 
   try {
-    const response = await axios.post(`http://localhost:3001/api/articles/${id}/comments/${commentId}/replies`, {
+    const response = await axios.post(`http://localhost:3000/api/articles/${id}/comments/${commentId}/replies`, {
       content: replyContent.value,
       parent_reply_id: replyId
     }, {
@@ -231,7 +231,7 @@ const deleteComment = async (commentId) => {
 
   const id = route.params.id
   try {
-    await axios.delete(`http://localhost:3001/api/articles/${id}/comments/${commentId}`, {
+    await axios.delete(`http://localhost:3000/api/articles/${id}/comments/${commentId}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -253,7 +253,7 @@ const deleteReply = async (commentId, replyId) => {
 
   const id = route.params.id
   try {
-    await axios.delete(`http://localhost:3001/api/articles/${id}/comments/${commentId}/replies/${replyId}`, {
+    await axios.delete(`http://localhost:3000/api/articles/${id}/comments/${commentId}/replies/${replyId}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }

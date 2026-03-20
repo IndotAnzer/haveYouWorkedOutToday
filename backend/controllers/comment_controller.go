@@ -3,6 +3,7 @@ package controllers
 import (
 	"haveYouWorkedOutToday/global"
 	"haveYouWorkedOutToday/models"
+	"haveYouWorkedOutToday/utils"
 	"net/http"
 	"strconv"
 
@@ -10,19 +11,11 @@ import (
 )
 
 func CreateComment(ctx *gin.Context) {
-	username, exists := ctx.Get("username")
-	if !exists {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
-		return
-	}
-
-	var user models.User
-	if err := global.Db.Where("username = ?", username).First(&user).Error; err != nil {
+	userID, err := utils.GetUserID(ctx)
+	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	userID := user.ID
 
 	var comment models.Comment
 
@@ -70,18 +63,9 @@ func CreateReply(ctx *gin.Context) {
 		return
 	}
 
-	username, exists := ctx.Get("username")
-	if !exists {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
-		return
-	}
-	var user models.User
-	if err := global.Db.Where("username = ?", username).First(&user).Error; err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+	userID, err := utils.GetUserID(ctx)
 
-	reply.UserID = user.ID
+	reply.UserID = userID
 
 	commentID, err := strconv.Atoi(ctx.Param("commentId"))
 	if err != nil {

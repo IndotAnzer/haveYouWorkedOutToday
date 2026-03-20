@@ -3,6 +3,18 @@ import { ref, onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 
+// 固定的训练动作选项
+const actionOptions = [
+  { label: '卧推', value: '卧推' },
+  { label: '引体向上', value: '引体向上' },
+  { label: '深蹲', value: '深蹲' },
+  { label: '硬拉', value: '硬拉' },
+  { label: '俯卧撑', value: '俯卧撑' },
+  { label: '哑铃弯举', value: '哑铃弯举' },
+  { label: '双杠臂屈伸', value: '双杠臂屈伸' },
+  { label: '腹肌训练', value: '腹肌训练' }
+]
+
 const router = useRouter()
 const articles = ref([])
 const loading = ref(false)
@@ -65,7 +77,7 @@ const fetchArticles = async () => {
       return
     }
 
-    const response = await axios.get('http://localhost:3001/api/articles', {
+    const response = await axios.get('http://localhost:3000/api/my/articles', {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -111,7 +123,7 @@ const createArticle = async () => {
         }))
       }))
     
-    await axios.post('http://localhost:3001/api/articles', {
+    await axios.post('http://localhost:3000/api/articles', {
       title: newArticle.title,
       content: content,
       preview: preview,
@@ -160,10 +172,15 @@ onMounted(() => {
         <h2>🏋️ 训练动态</h2>
         <p>记录每一次突破，见证每一份成长</p>
       </div>
-      <button @click="showCreateForm = !showCreateForm; resetForm()" class="create-btn" :class="{ active: showCreateForm }">
-        <span v-if="!showCreateForm">✨ 记录一下</span>
-        <span v-else>✕ 取消</span>
-      </button>
+      <div class="header-buttons">
+        <router-link to="/stats" class="stats-btn">
+          📊 统计分析
+        </router-link>
+        <button @click="showCreateForm = !showCreateForm; resetForm()" class="create-btn" :class="{ active: showCreateForm }">
+          <span v-if="!showCreateForm">✨ 记录一下</span>
+          <span v-else>✕ 取消</span>
+        </button>
+      </div>
     </div>
 
     <transition name="slide-fade">
@@ -217,12 +234,16 @@ onMounted(() => {
                 <div class="action-form-row">
                   <div class="form-group action-name">
                     <label>动作名称 <span class="required">*</span></label>
-                    <input 
-                      type="text" 
+                    <select 
                       v-model="action.action_name" 
-                      placeholder="例如：卧推"
                       :disabled="loading"
+                      class="action-select"
                     >
+                      <option value="">请选择动作</option>
+                      <option v-for="option in actionOptions" :key="option.value" :value="option.value">
+                        {{ option.label }}
+                      </option>
+                    </select>
                   </div>
                   <div class="form-group action-remark">
                     <label>备注</label>
@@ -383,6 +404,32 @@ onMounted(() => {
   margin: 0;
 }
 
+.header-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.stats-btn {
+  background: linear-gradient(135deg, #52c41a 0%, #38b000 100%);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(82, 196, 26, 0.4);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.stats-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(82, 196, 26, 0.5);
+}
+
 .create-btn {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -453,7 +500,8 @@ onMounted(() => {
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
   width: 100%;
   padding: 14px 16px;
   border: 2px solid #e8e8e8;
@@ -465,11 +513,21 @@ onMounted(() => {
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
   outline: none;
   border-color: #667eea;
   background: white;
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.action-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
 }
 
 .actions-section {
@@ -895,8 +953,15 @@ onMounted(() => {
     text-align: center;
   }
 
+  .header-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .stats-btn,
   .create-btn {
     width: 100%;
+    text-align: center;
   }
 
   .action-form-row {
